@@ -62,6 +62,16 @@ boutonDecroissant.addEventListener("click", function () {
      console.log(piecesOrdonnees);
 });
 
+// Création bouton pieces sans description
+const boutonNoDescription = document.querySelector(".btn-nodesc");
+
+boutonNoDescription.addEventListener("click", function () {
+    const piecesFiltrees = pieces.filter(function (piece) {
+        return piece.description
+    });
+    console.log(piecesFiltrees)
+});
+
 // Création filtre pour les pièces de -35€
 const boutonFiltrer = document.querySelector(".btn-filtrer");
 // CREATION du filtre avec la fonction "filter"
@@ -72,7 +82,7 @@ boutonFiltrer.addEventListener("click", function () {
    console.log(piecesFiltrees)
 });
 
-// CREATION nouvel tableau avec uniquement le nom des pièces
+// CREATION tableau avec uniquement le nom des pièces via une fonction lambda
 const noms = pieces.map(piece => piece.nom);
 // Tri des pièces dont le prix est de plus de 35€ "dites pas abordables"
 for(let i = pieces.length -1 ; i >= 0; i--){
@@ -93,12 +103,24 @@ for(let i=0; i < noms.length ; i++){
 document.querySelector('.abordables')
    .appendChild(abordablesElements)
 
-// Création bouton pieces sans description
-const boutonNoDescription = document.querySelector(".btn-nodesc");
+// CREATION tableaux avec uniquement le nom et uniquement le prix
+const nomsDisponibles = pieces.map(piece => piece.nom);
+const prixDisponibles = pieces.map(piece => piece.prix);
 
-boutonNoDescription.addEventListener("click", function () {
-    const piecesFiltrees = pieces.filter(function (piece) {
-        return piece.description
-    });
-    console.log(piecesFiltrees)
-});
+// Boucle pour vérifier si une pièce est disponible ou non et donc l'enlever des 2 tableaux juste au dessus
+for(let i = pieces.length -1 ; i >= 0; i--){
+    if(pieces[i].disponibilite === false){
+        nomsDisponibles.splice(i,1);
+        prixDisponibles.splice(i,1);
+    }
+}
+// Creation d'une liste 
+const disponiblesElement = document.createElement('ul');
+// Boucle pour faire afficher les produits disponibles et leur prix
+for(let i=0 ; i < nomsDisponibles.length ; i++){
+    const nomElement = document.createElement('li');
+    nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]} €`;
+    disponiblesElement.appendChild(nomElement);
+}
+// Rattachement à la div .disponibles
+document.querySelector('.disponibles').appendChild(disponiblesElement);
