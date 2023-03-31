@@ -1,46 +1,50 @@
 // RECUPERATION des pièces depuis le fichier JSON
-const reponse = await fetch('pieces-autos.json');
-const pieces = await reponse.json();
+const pieces = await fetch("pieces-autos.json").then(pieces => pieces.json());
 
-for (let i = 0; i < pieces.length; i++) {
+function genererPieces(pieces) {
+    for (let i = 0; i < pieces.length; i++) {
 
-    // "article" équivaut à chacune des pièces en fonction de leur index
-    const article = pieces[i];
-    // RECUPERATION de l'élément du DOM qui accueillera les fiches
-    const sectionFiches = document.querySelector(".fiches");
-    // CREATION d’une balise dédiée à une pièce automobile
-    const pieceElement = document.createElement("article");
-    // CREATION des balises et ajout des données depuis le fichier json
-    const imageElement = document.createElement("img");
-    imageElement.src = article.image;
+        // "article" équivaut à chacune des pièces en fonction de leur index
+        const article = pieces[i];
+        // RECUPERATION de l'élément du DOM qui accueillera les fiches
+        const sectionFiches = document.querySelector(".fiches");
+        // CREATION d’une balise dédiée à une pièce automobile
+        const pieceElement = document.createElement("article");
+        // CREATION des balises et ajout des données depuis le fichier json
+        const imageElement = document.createElement("img");
+        imageElement.src = article.image;
 
-    const nomElement = document.createElement("h2");
-    nomElement.innerText = article.nom;
-    
-    const prixElement = document.createElement("p");
-    prixElement.innerText = `Prix: ${article.prix} € (${article.prix < 35 ? "€" : "€€€"})`;
+        const nomElement = document.createElement("h2");
+        nomElement.innerText = article.nom;
+        
+        const prixElement = document.createElement("p");
+        prixElement.innerText = `Prix: ${article.prix} € (${article.prix < 35 ? "€" : "€€€"})`;
 
-    const categorieElement = document.createElement("p");
-    categorieElement.innerText = article.categorie ?? "(aucune catégorie)";
+        const categorieElement = document.createElement("p");
+        categorieElement.innerText = article.categorie ?? "(aucune catégorie)";
 
-    const descriptionElement = document.createElement("p");
-    descriptionElement.innerText = article.description ?? "Pas de description pour le moment.";
+        const descriptionElement = document.createElement("p");
+        descriptionElement.innerText = article.description ?? "Pas de description pour le moment.";
 
-    const stockElement = document.createElement("p");
-    stockElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock";
-    
-    // On RATTACHE la balise article a la section Fiches
-    sectionFiches.appendChild(pieceElement);
-    // On RATTACHE les différentes parties à pieceElement
-    pieceElement.appendChild(imageElement);
-    pieceElement.appendChild(nomElement);
-    pieceElement.appendChild(prixElement);
-    pieceElement.appendChild(categorieElement);
-    pieceElement.appendChild(descriptionElement);
-    pieceElement.appendChild(stockElement);
+        const stockElement = document.createElement("p");
+        stockElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock";
+        
+        // On RATTACHE la balise article a la section Fiches
+        sectionFiches.appendChild(pieceElement);
+        // On RATTACHE les différentes parties à pieceElement
+        pieceElement.appendChild(imageElement);
+        pieceElement.appendChild(nomElement);
+        pieceElement.appendChild(prixElement);
+        pieceElement.appendChild(categorieElement);
+        pieceElement.appendChild(descriptionElement);
+        pieceElement.appendChild(stockElement);
+    }
 }
+// Premier affichage de la page
+genererPieces(pieces);
+
+
 // Création bouton trier ordre croissant
-// RECUPERATION bouton trier dans l'ordre croissant
 const boutonTrier = document.querySelector(".btn-trier");
 // CREATION d'une nouvelle liste dans laquelle la fonction "sort" calcule et trie si un résultat entre 2 prix sont > = < à 0 
 boutonTrier.addEventListener("click", function () {
@@ -48,28 +52,30 @@ boutonTrier.addEventListener("click", function () {
     piecesOrdonnees.sort(function (a, b) {
         return a.prix - b.prix;
     });
-     console.log(piecesOrdonnees);
+    // Effacement de l'écran et regénération de la page au moment du clique
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesOrdonnees);
 });
 
 // Création bouton trier ordre décroissant
 const boutonDecroissant = document.querySelector(".btn-decroissant");
-
 boutonDecroissant.addEventListener("click", function () {
     const piecesOrdonnees = Array.from(pieces);
     piecesOrdonnees.sort(function (a, b) {
         return b.prix - a.prix; // Changement entre a.prix et b.prix
-     });
-     console.log(piecesOrdonnees);
+    });
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesOrdonnees);
 });
 
 // Création bouton pieces sans description
 const boutonNoDescription = document.querySelector(".btn-nodesc");
-
 boutonNoDescription.addEventListener("click", function () {
     const piecesFiltrees = pieces.filter(function (piece) {
         return piece.description
     });
-    console.log(piecesFiltrees)
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
 });
 
 // Création filtre pour les pièces de -35€
@@ -79,7 +85,8 @@ boutonFiltrer.addEventListener("click", function () {
    const piecesFiltrees = pieces.filter(function (piece) {
        return piece.prix <= 35;
    });
-   console.log(piecesFiltrees)
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
 });
 
 // CREATION tableau avec uniquement le nom des pièces via une fonction lambda
@@ -124,3 +131,12 @@ for(let i=0 ; i < nomsDisponibles.length ; i++){
 }
 // Rattachement à la div .disponibles
 document.querySelector('.disponibles').appendChild(disponiblesElement);
+
+const inputPrixMax = document.querySelector('#inputPrixMax')
+inputPrixMax.addEventListener('input', function(){
+    const piecesFiltrees = pieces.filter(function(piece){
+        return piece.prix <= inputPrixMax.value;
+    });
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
+})
