@@ -16,7 +16,7 @@ function genererPieces(pieces) {
 
         const nomElement = document.createElement("h2");
         nomElement.innerText = article.nom;
-        
+
         const prixElement = document.createElement("p");
         prixElement.innerText = `Prix: ${article.prix} € (${article.prix < 35 ? "€" : "€€€"})`;
 
@@ -28,7 +28,7 @@ function genererPieces(pieces) {
 
         const stockElement = document.createElement("p");
         stockElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock";
-        
+
         // On RATTACHE la balise article a la section Fiches
         sectionFiches.appendChild(pieceElement);
         // On RATTACHE les différentes parties à pieceElement
@@ -82,9 +82,9 @@ boutonNoDescription.addEventListener("click", function () {
 const boutonFiltrer = document.querySelector(".btn-filtrer");
 // CREATION du filtre avec la fonction "filter"
 boutonFiltrer.addEventListener("click", function () {
-   const piecesFiltrees = pieces.filter(function (piece) {
-       return piece.prix <= 35;
-   });
+    const piecesFiltrees = pieces.filter(function (piece) {
+        return piece.prix <= 35;
+    });
     document.querySelector(".fiches").innerHTML = "";
     genererPieces(piecesFiltrees);
 });
@@ -92,39 +92,39 @@ boutonFiltrer.addEventListener("click", function () {
 // CREATION tableau avec uniquement le nom des pièces via une fonction lambda
 const noms = pieces.map(piece => piece.nom);
 // Tri des pièces dont le prix est de plus de 35€ "dites pas abordables"
-for(let i = pieces.length -1 ; i >= 0; i--){
-   if(pieces[i].prix > 35){
-       noms.splice(i,1)
-   }
+for (let i = pieces.length - 1; i >= 0; i--) {
+    if (pieces[i].prix > 35) {
+        noms.splice(i, 1)
+    }
 }
 
 //CREATION de la liste pour accueillir les valeurs
 const abordablesElements = document.createElement('ul');
 //Ajout de chaque nom à la liste
-for(let i=0; i < noms.length ; i++){
-   const nomElement = document.createElement('li');
-   nomElement.innerText = noms[i];
-   abordablesElements.appendChild(nomElement)
+for (let i = 0; i < noms.length; i++) {
+    const nomElement = document.createElement('li');
+    nomElement.innerText = noms[i];
+    abordablesElements.appendChild(nomElement)
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
 document.querySelector('.abordables')
-   .appendChild(abordablesElements)
+    .appendChild(abordablesElements)
 
 // CREATION tableaux avec uniquement le nom et uniquement le prix
 const nomsDisponibles = pieces.map(piece => piece.nom);
 const prixDisponibles = pieces.map(piece => piece.prix);
 
 // Boucle pour vérifier si une pièce est disponible ou non et donc l'enlever des 2 tableaux juste au dessus
-for(let i = pieces.length -1 ; i >= 0; i--){
-    if(pieces[i].disponibilite === false){
-        nomsDisponibles.splice(i,1);
-        prixDisponibles.splice(i,1);
+for (let i = pieces.length - 1; i >= 0; i--) {
+    if (pieces[i].disponibilite === false) {
+        nomsDisponibles.splice(i, 1);
+        prixDisponibles.splice(i, 1);
     }
 }
 // Creation d'une liste 
 const disponiblesElement = document.createElement('ul');
 // Boucle pour faire afficher les produits disponibles et leur prix
-for(let i=0 ; i < nomsDisponibles.length ; i++){
+for (let i = 0; i < nomsDisponibles.length; i++) {
     const nomElement = document.createElement('li');
     nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]} €`;
     disponiblesElement.appendChild(nomElement);
@@ -133,8 +133,8 @@ for(let i=0 ; i < nomsDisponibles.length ; i++){
 document.querySelector('.disponibles').appendChild(disponiblesElement);
 
 const inputPrixMax = document.querySelector('#inputPrixMax')
-inputPrixMax.addEventListener('input', function(){
-    const piecesFiltrees = pieces.filter(function(piece){
+inputPrixMax.addEventListener('input', function () {
+    const piecesFiltrees = pieces.filter(function (piece) {
         return piece.prix <= inputPrixMax.value;
     });
     document.querySelector(".fiches").innerHTML = "";
